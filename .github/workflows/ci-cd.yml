@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: '3.9'
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
@@ -31,6 +31,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Deploy to server
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+      - name: Deploy to VPS
         run: |
-          docker-compose up -d --build
+          ssh -o StrictHostKeyChecking=no adetunmbikenny@34.46.128.75 'cd /home/adetunmbikenny/fastapi-book-project-1 && git pull && docker-compose up -d --build'
